@@ -1,0 +1,317 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════
+   SAVORIA — DESIGN SYSTEM
+   Complete redesign. All previous styles removed.
+═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Color Palette ─────────────────────────────────────────── */
+  --bg:           #060606;
+  --surface:      #0E0E0E;
+  --surface-2:    #161616;
+  --surface-3:    #1C1C1C;
+
+  --gold:         #C9A84C;
+  --gold-light:   #E2BF6A;
+  --gold-dark:    #8A6A28;
+  --gold-dim:     rgba(201, 168, 76, 0.10);
+  --gold-border:  rgba(201, 168, 76, 0.20);
+
+  --cream:        #EFE8D5;
+  --white:        #F8F4EC;
+  --muted:        #5C5147;
+  --muted-2:      #3E3830;
+  --border:       rgba(255, 255, 255, 0.055);
+
+  /* ── Typography ────────────────────────────────────────────── */
+  --font-display: 'Cormorant Garamond', 'Georgia', serif;
+  --font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-label:   'Cinzel', 'Georgia', serif;
+
+  /* ── Easing ────────────────────────────────────────────────── */
+  --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in:      cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:     cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* ─── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ─── Lenis smooth scroll compatibility ──────────────────────── */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ─── Film grain noise overlay ───────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ─── Custom scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+/* ─── Typography classes ─────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+.font-label   { font-family: var(--font-label); }
+.font-body    { font-family: var(--font-body); }
+
+/* ─── Gold gradient text ─────────────────────────────────────── */
+.text-gold-gradient {
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 55%, var(--gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Section label (small caps category marker) ─────────────── */
+.section-label {
+  font-family: var(--font-label);
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-label::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────── */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2.25rem;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--font-label);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background 0.35s var(--ease-smooth), color 0.35s var(--ease-smooth), transform 0.3s var(--ease-smooth);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.btn-gold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-expo);
+}
+.btn-gold:hover::before { transform: scaleX(1); }
+.btn-gold:hover { color: var(--bg); transform: translateY(-2px); }
+.btn-gold span { position: relative; z-index: 1; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2.25rem;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-label);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: all 0.35s var(--ease-smooth);
+  cursor: pointer;
+}
+.btn-ghost:hover {
+  border-color: rgba(255,255,255,0.25);
+  color: var(--cream);
+  transform: translateY(-2px);
+}
+
+/* ─── Image Placeholder ──────────────────────────────────────── */
+.img-placeholder {
+  background-color: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.img-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.img-placeholder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(6,6,6,0.6) 100%);
+}
+.img-placeholder__inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+.img-placeholder__icon {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.img-placeholder__label {
+  font-family: var(--font-label);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,0.5);
+  max-width: 140px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ─── Thin gold divider ──────────────────────────────────────── */
+.divider-gold {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+}
+
+/* ─── Burger layer base ──────────────────────────────────────── */
+.burger-layer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  will-change: transform;
+}
+
+/* ─── Service card 3D tilt ───────────────────────────────────── */
+.service-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.1s ease;
+}
+
+/* ─── Clip path reveal utility ───────────────────────────────── */
+.clip-reveal {
+  clip-path: inset(100% 0 0 0);
+}
+
+/* ─── Invisible until GSAP controls ─────────────────────────── */
+.gsap-hidden {
+  opacity: 0;
+}
+
+/* ─── Marquee ────────────────────────────────────────────────── */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee-left 30s linear infinite;
+  display: flex;
+  width: max-content;
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+/* ─── Page transition fade ───────────────────────────────────── */
+.page-enter {
+  animation: pageFadeIn 0.7s var(--ease-expo) forwards;
+}
+@keyframes pageFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Responsive helpers ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .btn-gold, .btn-ghost {
+    padding: 0.75rem 1.75rem;
+    font-size: 0.6rem;
+  }
+  .section-label { font-size: 0.55rem; }
+}
+
+/* ─── Dish card image hover (single global rule, not per-card) ── */
+article:hover img { transform: scale(1.06); }
+
+/* ─── Performance: CSS containment for independent sections ─────
+   layout — block used for layout calculations outside this box
+   paint  — don't paint outside bounds (clip hint to browser)
+   style  — style calculations stay local
+   Avoids full-page recalculate on localised changes.             */
+.perf-contain {
+  contain: layout paint style;
+}
+
+/* ─── GPU compositing hint for frequently-animated elements ──── */
+.gpu-layer {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ─── Image aspect-ratio reservations (prevent CLS) ─────────── */
+.img-16-9 { aspect-ratio: 16 / 9; }
+.img-4-3  { aspect-ratio: 4 / 3;  }
+.img-1-1  { aspect-ratio: 1 / 1;  }
+
