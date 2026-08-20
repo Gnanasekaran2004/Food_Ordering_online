@@ -4,20 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { navLinks } from '../data/restaurantData';
 import { useAuth } from '../context/AuthContext';
 
-/* ═══════════════════════════════════════════════════════════════
-   SAVORIA NAVBAR — with authentication state
-   Unchanged visual design. Auth state adds:
-   - Logged-out: LOGIN link in top-right
-   - Logged-in:  username pill + dropdown (Profile / Sign Out)
-═══════════════════════════════════════════════════════════════ */
-
-/* ── User account dropdown ────────────────────────────────── */
 function UserMenu({ user, onClose }) {
   const { logout } = useAuth();
   const navigate   = useNavigate();
   const menuRef    = useRef(null);
 
-  // Close on outside click
   useEffect(() => {
     function handleClick(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) onClose();
@@ -295,7 +286,6 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                /* Logged-out: LOGIN link */
                 <Link
                   to="/login"
                   style={{
@@ -313,7 +303,9 @@ export default function Navbar() {
               )
             )}
 
-            <button className="btn-gold"><span>Reserve</span></button>
+            <button className="btn-gold" to="/order" onClick={() => navigate('/order')}>
+              <span>Reserve</span>
+            </button>
           </div>
 
           {/* Mobile Hamburger */}

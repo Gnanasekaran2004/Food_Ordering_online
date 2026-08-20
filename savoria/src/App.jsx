@@ -61,22 +61,18 @@ function AppInner() {
             {/* ── Public ────────────────────────────────── */}
             <Route path="/"                element={<HomePage />} />
             <Route path="/order"           element={<OrderPage />} />
-            <Route path="/payment"         element={<PaymentPage />} />
-            <Route path="/payment-success" element={<PaymentSuccessPage />} />
             <Route path="/about"           element={<AboutPage />} />
             <Route path="/services"        element={<ServicesPage />} />
             <Route path="/contact"         element={<ContactPage />} />
 
+            {/* ── Protected ─────────────────────────────── */}
+            <Route path="/profile"         element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/payment"         element={<ProtectedRoute><PaymentPage /></ProtectedRoute>} />
+            <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccessPage /></ProtectedRoute>} />
+
             {/* ── Auth ──────────────────────────────────── */}
             <Route path="/login"    element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-
-            {/* ── Protected ─────────────────────────────── */}
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            } />
           </Routes>
         </Suspense>
       </div>

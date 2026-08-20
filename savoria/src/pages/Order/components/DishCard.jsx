@@ -31,9 +31,14 @@ function SpiceDots({ level }) {
 }
 
 /* ── Add to Cart button / Qty controls ─────────────────────────── */
+import { useAuth } from '../../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 function CartControl({ dish }) {
   const { addItem, increaseQty, decreaseQty } = useCartActions();
   const { itemCount } = useCartState();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const qty = itemCount(dish.id);
 
   if (!dish.available) {
@@ -44,10 +49,19 @@ function CartControl({ dish }) {
     );
   }
 
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    addItem(dish);
+  };
+
   if (qty === 0) {
     return (
       <button
-        onClick={e => { e.stopPropagation(); addItem(dish); }}
+        onClick={handleAddToCart}
         aria-label={`Add ${dish.name} to cart`}
         style={{
           padding: '0.5rem 1.1rem',
