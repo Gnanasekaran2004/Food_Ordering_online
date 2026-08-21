@@ -1,24 +1,4 @@
-import imgArtisanStillWater from '../pages/Order/images/Artisan-Still-Water.webp';
-import imgBraisedA5WagyuShortRib from '../pages/Order/images/Braised-A5-Wagyu-Short-Rib.webp';
-import imgButterPoachedLobster from '../pages/Order/images/Butter-Poached Lobster.webp';
-import imgCauliflowerSteak from '../pages/Order/images/Cauliflower-Steak.webp';
-import imgChefsTableExperience from '../pages/Order/images/Chef\'s-Table-Experience.webp';
-import imgChileanSeaBass from '../pages/Order/images/Chilean-Sea-Bass.webp';
-import imgDuckConfit from '../pages/Order/images/Duck-Confit.webp';
-import imgGrilledTigerPrawns from '../pages/Order/images/Grilled-Tiger-Prawns.webp';
-import imgHeirloomTomatoTart from '../pages/Order/images/Heirloom-Tomato-Tart.webp';
-import imgRackOfLamb from '../pages/Order/images/Rack-of-Lamb.webp';
-import imgRoastedHeritageBeet from '../pages/Order/images/Roasted-Heritage-Beet.webp';
-import imgSaffronPannaCotta from '../pages/Order/images/Saffron-Panna-Cotta.webp';
-import imgSavoriaSignatureCocktail from '../pages/Order/images/Savoria-Signature-Cocktail.webp';
-import imgSearedScallopAmuse from '../pages/Order/images/Seared-Scallop-Amuse.webp';
-import imgSommeliersWhiteSelection from '../pages/Order/images/Sommelier\'s-White-Selection.webp';
-import imgTruffleArancini from '../pages/Order/images/Truffle-Arancini.webp';
-import imgValrhonaChocolateSphere from '../pages/Order/images/Valrhona-Chocolate-Sphere.webp';
-import imgWagyuBeefTartare from '../pages/Order/images/Wagyu-Beef-Tartare.webp';
-import imgWildMushroomRisotto from '../pages/Order/images/Wild-Mushroom-Risotto.webp';
-import imgYuzuTart from '../pages/Order/images/Yuzu-Tart.webp';
-import imgTheTastingJourney from '../pages/Order/images/The-Tasting-Journey.webp';
+// Imports removed. Images are now in public/images/menu/
 /**
  * SAVORIA — MENU DATA
  *
@@ -93,7 +73,7 @@ export const dishes = [
     description: 'Three hand-dived scallops seared to a perfect golden crust, resting on silken cauliflower purée, finished with Oscietra caviar and a chive emulsion.',
     price: 1200,
     category: 'starters',
-    image: imgSearedScallopAmuse,
+    image: '/images/menu/Seared-Scallop-Amuse.webp',
     dietaryTags: ['glutenFree', 'eggFree'],
     spiceLevel: null,
     available: true,
@@ -113,7 +93,7 @@ export const dishes = [
     description: 'Crispy Arborio rice croquettes infused with 24-hour truffle-scented stock, finished with a dusting of aged Parmigiano-Reggiano and house saffron aioli.',
     price: 950,
     category: 'starters',
-    image: imgTruffleArancini,
+    image: '/images/menu/Truffle-Arancini.webp',
     dietaryTags: ['vegetarian'],
     spiceLevel: 'mild',
     available: true,
@@ -133,7 +113,7 @@ export const dishes = [
     description: 'Hand-cut A5 Wagyu seasoned tableside with smoked salt, French capers, and Dijon. Crowned with a cured quail egg yolk and served with hand-fired sourdough.',
     price: 1650,
     category: 'starters',
-    image: imgWagyuBeefTartare,
+    image: '/images/menu/Wagyu-Beef-Tartare.webp',
     dietaryTags: ['glutenFree'],
     spiceLevel: null,
     available: true,
@@ -153,7 +133,7 @@ export const dishes = [
     description: 'A mosaic of eight varieties of heirloom tomato on a crisp rye pastry base, layered with hand-rolled goat cheese mousse and finished with 10-year aged balsamic.',
     price: 780,
     category: 'starters',
-    image: imgHeirloomTomatoTart,
+    image: '/images/menu/Heirloom-Tomato-Tart.webp',
     dietaryTags: ['vegetarian', 'eggFree'],
     spiceLevel: 'mild',
     available: true,
@@ -175,7 +155,7 @@ export const dishes = [
     description: 'A full short rib braised for 48 hours in a reduction of Barolo and veal stock, served over silken Ratte potato purée with black truffle shavings and micro herbs.',
     price: 3800,
     category: 'mains',
-    image: imgBraisedA5WagyuShortRib,
+    image: '/images/menu/Braised-A5-Wagyu-Short-Rib.webp',
     dietaryTags: ['glutenFree'],
     spiceLevel: null,
     available: true,
@@ -195,7 +175,7 @@ export const dishes = [
     description: 'French Anjou duck leg slow-cooked in its own fat for 12 hours, skin rendered to a precise crisp. Served with Puy lentils cooked in duck stock and a cherry gastrique.',
     price: 2600,
     category: 'mains',
-    image: imgDuckConfit,
+    image: '/images/menu/Duck-Confit.webp',
     dietaryTags: ['glutenFree', 'dairyFree'],
     spiceLevel: 'mild',
     available: true,
@@ -215,7 +195,7 @@ export const dishes = [
     description: 'Aged Carnaroli rice cooked to a perfect mantecatura with a double mushroom stock, finished tableside with shaved black truffle and 36-month Parmigiano-Reggiano.',
     price: 1800,
     category: 'mains',
-    image: imgWildMushroomRisotto,
+    image: '/images/menu/Wild-Mushroom-Risotto.webp',
     dietaryTags: ['vegetarian', 'glutenFree', 'eggFree'],
     spiceLevel: null,
     available: true,
@@ -235,7 +215,7 @@ export const dishes = [
     description: 'A Frenched rack of New Zealand lamb, crusted with Dijon and fresh herbs, roasted to a perfect pink. Served with pommes dauphinoise and a rosemary-minted reduction.',
     price: 3200,
     category: 'mains',
-    image: imgRackOfLamb,
+    image: '/images/menu/Rack-of-Lamb.webp',
     dietaryTags: ['glutenFree'],
     spiceLevel: null,
     available: true,
@@ -257,7 +237,7 @@ export const dishes = [
     description: 'A whole Maine lobster tail gently poached in clarified brown butter and a champagne court-bouillon. Served with Oscietra caviar and a chive beurre blanc.',
     price: 4500,
     category: 'seafood',
-    image: imgButterPoachedLobster,
+    image: '/images/menu/Butter-Poached Lobster.webp',
     dietaryTags: ['glutenFree'],
     spiceLevel: null,
     available: true,
@@ -277,7 +257,7 @@ export const dishes = [
     description: 'Wild-caught Chilean sea bass marinated in white miso, sake, and mirin for 72 hours, then broiled to a caramelised crust. Served in a clean dashi broth.',
     price: 2900,
     category: 'seafood',
-    image: imgChileanSeaBass,
+    image: '/images/menu/Chilean-Sea-Bass.webp',
     dietaryTags: ['glutenFree', 'dairyFree', 'eggFree'],
     spiceLevel: 'mild',
     available: true,
@@ -297,7 +277,7 @@ export const dishes = [
     description: 'Jumbo tiger prawns grilled over binchotan charcoal, tossed in a Calabrian chilli-lemon butter. Served with house fermented sourdough and lemon-herb aioli.',
     price: 2200,
     category: 'seafood',
-    image: imgGrilledTigerPrawns,
+    image: '/images/menu/Grilled-Tiger-Prawns.webp',
     dietaryTags: ['dairyFree', 'eggFree'],
     spiceLevel: 'spicy',
     available: true,
@@ -319,7 +299,7 @@ export const dishes = [
     description: 'Three varieties of heritage beet slow-roasted in a salt crust, served with house-made labneh, toasted pistachio gremolata, and a pomegranate-walnut dressing.',
     price: 1100,
     category: 'vegetarian',
-    image: imgRoastedHeritageBeet,
+    image: '/images/menu/Roasted-Heritage-Beet.webp',
     dietaryTags: ['vegetarian', 'glutenFree', 'eggFree'],
     spiceLevel: null,
     available: true,
@@ -339,7 +319,7 @@ export const dishes = [
     description: 'A whole Sicilian cauliflower roasted at 260°C to a burnished char. Plated on smoked harissa and tahini yoghurt, finished with golden pine nuts and preserved lemon.',
     price: 1400,
     category: 'vegetarian',
-    image: imgCauliflowerSteak,
+    image: '/images/menu/Cauliflower-Steak.webp',
     dietaryTags: ['vegetarian', 'vegan', 'glutenFree', 'dairyFree', 'eggFree'],
     spiceLevel: 'medium',
     available: true,
@@ -361,7 +341,7 @@ export const dishes = [
     description: 'A Valrhona Guanaja dark chocolate sphere dissolved tableside with warm caramel sauce, revealing a salted caramel mousse, brownie soil and 24-carat gold leaf.',
     price: 1100,
     category: 'desserts',
-    image: imgValrhonaChocolateSphere,
+    image: '/images/menu/Valrhona-Chocolate-Sphere.webp',
     dietaryTags: ['vegetarian', 'glutenFree'],
     spiceLevel: null,
     available: true,
@@ -381,7 +361,7 @@ export const dishes = [
     description: 'Silk-textured saffron panna cotta made with the finest Kashmiri threads, set over 24 hours, finished with a hand-poured pistachio tuile and Provence rose honey.',
     price: 850,
     category: 'desserts',
-    image: imgSaffronPannaCotta,
+    image: '/images/menu/Saffron-Panna-Cotta.webp',
     dietaryTags: ['vegetarian', 'glutenFree', 'eggFree'],
     spiceLevel: null,
     available: true,
@@ -401,7 +381,7 @@ export const dishes = [
     description: 'A wafer-thin sesame sablé shell filled with intensely fragrant yuzu curd and finished with a torched Italian meringue, yuzu zest and edible flowers.',
     price: 950,
     category: 'desserts',
-    image: imgYuzuTart,
+    image: '/images/menu/Yuzu-Tart.webp',
     dietaryTags: ['vegetarian'],
     spiceLevel: null,
     available: true,
@@ -423,7 +403,7 @@ export const dishes = [
     description: "A 150ml pour chosen from our sommelier's curated cellar selection of white Burgundy, biodynamic Alsatian, or rare Italian whites, rotated weekly.",
     price: 1200,
     category: 'drinks',
-    image: imgSommeliersWhiteSelection,
+    image: "/images/menu/Sommelier's-White-Selection.webp",
     dietaryTags: ['vegan', 'glutenFree', 'dairyFree', 'eggFree'],
     spiceLevel: null,
     available: true,
@@ -443,7 +423,7 @@ export const dishes = [
     description: 'House-made cardamom-infused Hendricks Gin, fresh yuzu juice, St. Germain elderflower liqueur, topped with a Champagne float. Finished with an edible gold rim.',
     price: 1450,
     category: 'drinks',
-    image: imgSavoriaSignatureCocktail,
+    image: '/images/menu/Savoria-Signature-Cocktail.webp',
     dietaryTags: ['vegan', 'glutenFree', 'dairyFree', 'eggFree'],
     spiceLevel: null,
     available: true,
@@ -463,7 +443,7 @@ export const dishes = [
     description: 'Sourced from the mineral-rich springs of Coorg, our house water is selected for its perfect mineral balance and neutral TDS, complementing our tasting menu.',
     price: 180,
     category: 'drinks',
-    image: imgArtisanStillWater,
+    image: '/images/menu/Artisan-Still-Water.webp',
     dietaryTags: ['vegan', 'glutenFree', 'dairyFree', 'eggFree'],
     spiceLevel: null,
     available: true,
@@ -484,7 +464,7 @@ export const dishes = [
     description: "Chef Arjun Malhotra's definitive culinary statement. Twelve precisely composed courses showcasing the full breadth of Savoria's culinary philosophy — available for the entire table only.",
     price: 4800,
     category: 'specials',
-    image: imgTheTastingJourney,
+    image: '/images/menu/The-Tasting-Journey.webp',
     dietaryTags: [],
     spiceLevel: null,
     available: true,
@@ -504,7 +484,7 @@ export const dishes = [
     description: "Eight surprise courses prepared and explained at the chef's counter. An intimate conversation between kitchen and guest. Limited to four covers per service.",
     price: 3600,
     category: 'specials',
-    image: imgChefsTableExperience,
+    image: "/images/menu/Chef's-Table-Experience.webp",
     dietaryTags: [],
     spiceLevel: null,
     available: true,

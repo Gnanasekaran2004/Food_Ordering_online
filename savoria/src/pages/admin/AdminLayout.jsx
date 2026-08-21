@@ -3,9 +3,9 @@ import { Outlet, useLocation } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import AdminTopBar from './components/AdminTopBar';
 import NotificationPanel from './components/NotificationPanel';
-import { useAdminData } from './hooks/useAdminData';
+import { AdminDataProvider, useAdminData } from './context/AdminDataContext';
 
-export default function AdminLayout() {
+function AdminLayoutInner() {
   const [collapsed, setCollapsed] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const location = useLocation();
@@ -39,10 +39,18 @@ export default function AdminLayout() {
         transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         display: 'flex', flexDirection: 'column'
       }}>
-        <div style={{ padding: '24px', flex: 1, overflowX: 'hidden' }}>
+        <main style={{ padding: '24px', flex: 1, overflowX: 'hidden' }}>
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
+  );
+}
+
+export default function AdminLayout() {
+  return (
+    <AdminDataProvider>
+      <AdminLayoutInner />
+    </AdminDataProvider>
   );
 }

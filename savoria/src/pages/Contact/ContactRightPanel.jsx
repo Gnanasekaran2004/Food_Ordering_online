@@ -165,9 +165,35 @@ function useRestaurantStatus(schedule) {
 /* ══════════════════════════════════════════════════════════════
    CONTACT RIGHT PANEL
 ══════════════════════════════════════════════════════════════ */
+import { usePublicSettings } from './hooks/usePublicSettings';
+
 export default function ContactRightPanel() {
   const { tagline, intro, address, phone, email, restaurantSchedule, reservationNote, social } = contactData;
-  const liveStatus = useRestaurantStatus(restaurantSchedule);
+  const { settings, loading } = usePublicSettings();
+  
+  // Create a dynamic schedule using Firebase settings if available
+  const activeSchedule = React.useMemo(() => {
+    if (!settings || !settings.hours) return restaurantSchedule;
+    
+    const dayMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const newHours = {};
+    
+    dayMap.forEach((day, index) => {
+      const dayHours = settings.hours[day];
+      if (dayHours && dayHours.open && dayHours.close) {
+        newHours[index] = [{ name: 'Service', open: dayHours.open, close: dayHours.close }];
+      } else {
+        newHours[index] = [];
+      }
+    });
+
+    return {
+      timezone: "Asia/Kolkata",
+      hours: newHours
+    };
+  }, [settings, restaurantSchedule]);
+
+  const liveStatus = useRestaurantStatus(activeSchedule);
 
   return (
     <div
@@ -193,7 +219,7 @@ export default function ContactRightPanel() {
           lineHeight: 1.1,
           marginBottom: '1rem',
         }}>
-          {tagline}
+          {settings?.tagline || tagline}
         </motion.h1>
         <motion.p {...fadeUp(0.3)} style={{
           fontFamily: 'var(--font-body)',
@@ -203,7 +229,7 @@ export default function ContactRightPanel() {
           lineHeight: 1.85,
           maxWidth: '480px',
         }}>
-          {intro}
+          {settings?.description || intro}
         </motion.p>
       </div>
 
@@ -288,13 +314,21 @@ export default function ContactRightPanel() {
 
             {/* Weekly Schedule */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              {restaurantSchedule.display.map((h, i) => (
+              {(settings?.hours ? [
+                { days: 'Monday', time: settings.hours.Monday?.open ? `${settings.hours.Monday.open} - ${settings.hours.Monday.close}` : 'Closed', closed: !settings.hours.Monday?.open },
+                { days: 'Tuesday', time: settings.hours.Tuesday?.open ? `${settings.hours.Tuesday.open} - ${settings.hours.Tuesday.close}` : 'Closed', closed: !settings.hours.Tuesday?.open },
+                { days: 'Wednesday', time: settings.hours.Wednesday?.open ? `${settings.hours.Wednesday.open} - ${settings.hours.Wednesday.close}` : 'Closed', closed: !settings.hours.Wednesday?.open },
+                { days: 'Thursday', time: settings.hours.Thursday?.open ? `${settings.hours.Thursday.open} - ${settings.hours.Thursday.close}` : 'Closed', closed: !settings.hours.Thursday?.open },
+                { days: 'Friday', time: settings.hours.Friday?.open ? `${settings.hours.Friday.open} - ${settings.hours.Friday.close}` : 'Closed', closed: !settings.hours.Friday?.open },
+                { days: 'Saturday', time: settings.hours.Saturday?.open ? `${settings.hours.Saturday.open} - ${settings.hours.Saturday.close}` : 'Closed', closed: !settings.hours.Saturday?.open },
+                { days: 'Sunday', time: settings.hours.Sunday?.open ? `${settings.hours.Sunday.open} - ${settings.hours.Sunday.close}` : 'Closed', closed: !settings.hours.Sunday?.open },
+              ] : restaurantSchedule.display).map((h, i) => (
                 <div key={i} style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 300, lineHeight: 1.6 }}>
                   <span style={{ color: 'var(--muted)', marginRight: '0.4rem' }}>{h.days}:</span>
                   {h.closed ? (
-                    <span style={{ color: 'rgba(224,92,92,0.7)' }}>Closed</span>
+                    <span style={{ color: 'var(--muted)', fontStyle: 'italic' }}>Closed</span>
                   ) : (
-                    <span style={{ color: 'var(--cream)' }}>{h.lunch} · {h.dinner}</span>
+                    <span style={{ color: 'var(--cream)' }}>{h.time || `${h.lunch} · ${h.dinner}`}</span>
                   )}
                 </div>
               ))}

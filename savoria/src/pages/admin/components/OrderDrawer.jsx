@@ -24,9 +24,27 @@ export default function OrderDrawer({ order, onClose }) {
               <div><span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>Customer</span><div style={{ color: 'var(--cream)' }}>{order.customer}</div><div style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>{order.email}</div></div>
               <div style={{ textAlign: 'right' }}><span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>Date</span><div style={{ color: 'var(--cream)' }}>{new Date(order.date).toLocaleString()}</div></div>
             </div>
-            <div style={{ display: 'flex', gap: '16px' }}>
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-end' }}>
               <div><span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>Status</span><div style={{ marginTop: '4px' }}><StatusBadge status={order.status} /></div></div>
               <div><span style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>Payment</span><div style={{ marginTop: '4px' }}><StatusBadge status={order.payment} /></div></div>
+              
+              <div style={{ marginLeft: 'auto' }}>
+                <select 
+                  onChange={(e) => onClose(order, e.target.value)}
+                  value={order.status}
+                  style={{
+                    background: 'var(--surface)', color: 'var(--cream)',
+                    border: '1px solid var(--border)', padding: '6px 12px', borderRadius: '4px'
+                  }}
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Preparing">Preparing</option>
+                  <option value="Ready">Ready</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
             </div>
             <div>
               <h3 style={{ color: 'var(--gold)', fontSize: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '8px' }}>Items</h3>

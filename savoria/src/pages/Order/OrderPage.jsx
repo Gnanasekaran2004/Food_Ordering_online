@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useCallback, useEffect, useDeferredValue } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { dishes, CATEGORIES, SORT_OPTIONS, PRICE_RANGE_LIMITS } from '../../data/menuData';
+import { CATEGORIES, SORT_OPTIONS, PRICE_RANGE_LIMITS } from '../../data/menuData';
+import { usePublicMenu } from './hooks/usePublicMenu';
 import OrderHeader from './components/OrderHeader';
 import SearchBar from './components/SearchBar';
 import CategoryNav from './components/CategoryNav';
@@ -40,51 +41,50 @@ function countActive(f) {
 
 /* ── Filtering logic ─────────────────────────────────────────── */
 function applyFilters(allDishes, { search, category, filters, sort }) {
-  let result = allDishes;
+  let result = allDishes || [];
 
   // Hide unavailable unless opted in
-  if (!filters.unavailable) result = result.filter(d => d.available);
+  if (!filters.unavailable) result = result.filter(d => d.available !== false);
 
   // Category
-  if (category !== 'all') result = result.filter(d => d.category === category);
+  if (category !== 'all') {
+    result = result.filter(d => d.category?.toLowerCase() === category.toLowerCase());
+  }
 
-  // Search (name, shortDesc, description, category)
-  if (search.trim()) {
-    const q = search.trim().toLowerCase();
+  // Search
+  if (search) {
+    const q = search.toLowerCase();
     result = result.filter(d =>
-      d.name.toLowerCase().includes(q) ||
-      d.shortDesc.toLowerCase().includes(q) ||
-      d.description.toLowerCase().includes(q) ||
-      d.category.toLowerCase().includes(q) ||
-      d.dietaryTags.some(t => t.toLowerCase().includes(q))
+      d.name?.toLowerCase().includes(q) ||
+      d.description?.toLowerCase().includes(q) ||
+      d.dietaryTags?.some(t => t.toLowerCase().includes(q))
     );
   }
 
-  // Dietary (must satisfy ALL selected tags)
+  // Dietary
   if (filters.dietary.length > 0) {
-    result = result.filter(d => filters.dietary.every(t => d.dietaryTags.includes(t)));
+    result = result.filter(d =>
+      filters.dietary.every(tag => d.dietaryTags && d.dietaryTags.includes(tag))
+    );
   }
 
-  // Spice (any match)
+  // Spice
   if (filters.spice.length > 0) {
-    result = result.filter(d => d.spiceLevel && filters.spice.includes(d.spiceLevel));
+    result = result.filter(d => filters.spice.includes(d.spiceLevel));
   }
 
-  // Price range
+  // Price
   result = result.filter(d => d.price >= filters.price[0] && d.price <= filters.price[1]);
 
-  // Chef special
+  // Booleans
   if (filters.chefSpecial) result = result.filter(d => d.chefSpecial);
-
-  // Seasonal
-  if (filters.seasonal) result = result.filter(d => d.seasonal);
 
   // Sorting
   switch (sort) {
     case 'popular':    result = [...result].sort((a, b) => (b.reviews ?? 0) - (a.reviews ?? 0)); break;
-    case 'price-asc':  result = [...result].sort((a, b) => a.price - b.price); break;
-    case 'price-desc': result = [...result].sort((a, b) => b.price - a.price); break;
-    case 'name-asc':   result = [...result].sort((a, b) => a.name.localeCompare(b.name)); break;
+    case 'price-asc':  result = [...result].sort((a, b) => (a.price || 0) - (b.price || 0)); break;
+    case 'price-desc': result = [...result].sort((a, b) => (b.price || 0) - (a.price || 0)); break;
+    case 'name-asc':   result = [...result].sort((a, b) => (a.name || '').localeCompare(b.name || '')); break;
     case 'rating':     result = [...result].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)); break;
     case 'recommended':
     default:
@@ -101,6 +101,7 @@ function applyFilters(allDishes, { search, category, filters, sort }) {
    ORDER PAGE
 ══════════════════════════════════════════════════════════════ */
 export default function OrderPage() {
+  const { dishes, loading: dishesLoading, error: dishesError } = usePublicMenu();
   const [search,   setSearch]   = useState('');
   const [category, setCategory] = useState('all');
   const [filters,  setFilters]  = useState(DEFAULT_FILTERS);
@@ -117,7 +118,7 @@ export default function OrderPage() {
 
   const filtered = useMemo(
     () => applyFilters(dishes, { search: deferredSearch, category, filters: deferredFilters, sort }),
-    [deferredSearch, category, deferredFilters, sort]
+    [dishes, deferredSearch, category, deferredFilters, sort]
   );
 
   const activeFilterCount = countActive(filters);
@@ -306,7 +307,12 @@ export default function OrderPage() {
               </p>
             </div>
 
-            {filtered.length === 0 ? (
+            {dishesLoading ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 'clamp(4rem, 10vh, 7rem) 2rem', gap: '1.25rem' }}>
+                <div style={{ color: 'var(--gold)', fontSize: '2rem' }}>...</div>
+                <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Loading menu from the kitchen...</p>
+              </div>
+            ) : filtered.length === 0 ? (
               /* Empty state */
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 'clamp(4rem, 10vh, 7rem) 2rem', gap: '1.25rem', border: '1px solid var(--border)', borderRadius: '3px' }}>
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: 'var(--surface-3)', userSelect: 'none' }}>◈</span>

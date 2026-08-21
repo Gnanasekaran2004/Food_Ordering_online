@@ -1,11 +1,22 @@
 import React from 'react';
-import { useAdminData } from '../hooks/useAdminData';
+import { useAdminData } from '../context/AdminDataContext';
+import { useAdminAuth } from '../../../context/AdminAuthContext';
+import { updateReservationStatus } from '../../../services/adminReservationService';
 import AdminTable from '../components/AdminTable';
 import StatusBadge from '../components/StatusBadge';
 import KpiCard from '../components/KpiCard';
 
 export default function ReservationsPage() {
   const { reservations } = useAdminData('30d');
+  const { adminUser } = useAdminAuth();
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateReservationStatus(id, newStatus, adminUser);
+    } catch (err) {
+      console.error("Failed to update reservation", err);
+    }
+  };
 
   const columns = [
     { key: 'id', label: 'Res ID' },
@@ -13,7 +24,17 @@ export default function ReservationsPage() {
     { key: 'party', label: 'Party Size' },
     { key: 'date', label: 'Date', render: r => new Date(r.date).toLocaleDateString() },
     { key: 'time', label: 'Time' },
-    { key: 'status', label: 'Status', render: r => <StatusBadge status={r.status} /> },
+    { key: 'status', label: 'Status', render: r => (
+      <select 
+        value={r.status} 
+        onChange={e => handleStatusChange(r.id, e.target.value)}
+        style={{ background: 'var(--surface)', color: 'var(--cream)', border: '1px solid var(--border)', borderRadius: '4px', padding: '4px 8px' }}
+      >
+        <option value="Upcoming">Upcoming</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    )},
     { key: 'notes', label: 'Notes', render: r => <span style={{ color: 'var(--muted)' }}>{r.notes || '-'}</span> }
   ];
 
@@ -27,7 +48,7 @@ export default function ReservationsPage() {
         <KpiCard label="Cancelled" value={reservations.filter(r=>r.status==='Cancelled').length} icon="✕" trendPositive={false} />
       </div>
       <div style={{ background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--border)', overflow: 'hidden' }}>
-        <AdminTable columns={columns} data={reservations} />
+        <AdminTable columns={columns} data={reservations} emptyMessage="No reservations found." />
       </div>
     </div>
   );

@@ -1,14 +1,30 @@
 import React, { useState } from 'react';
-import { useAdminData } from '../hooks/useAdminData';
+import { useAdminData } from '../context/AdminDataContext';
+import { useAdminAuth } from '../../../context/AdminAuthContext';
+import { updateOrderStatus } from '../../../services/adminOrderService';
 import AdminTable from '../components/AdminTable';
 import StatusBadge from '../components/StatusBadge';
 import OrderDrawer from '../components/OrderDrawer';
 
 export default function OrdersPage() {
   const { orders } = useAdminData('30d');
+  const { adminUser } = useAdminAuth();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const handleCloseDrawer = async (order, newStatus) => {
+    if (newStatus && order && newStatus !== order.status) {
+      try {
+        await updateOrderStatus(order.id, newStatus, adminUser);
+      } catch (err) {
+        console.error("Failed to update status", err);
+        alert("Failed to update status");
+      }
+    } else if (!newStatus) {
+      setSelectedOrder(null);
+    }
+  };
 
   const filtered = orders.filter(o => {
     const matchSearch = o.id.toLowerCase().includes(search.toLowerCase()) || o.customer.toLowerCase().includes(search.toLowerCase());
@@ -48,7 +64,7 @@ export default function OrdersPage() {
       <div style={{ background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--border)', overflow: 'hidden' }}>
         <AdminTable columns={columns} data={filtered} onRowClick={setSelectedOrder} emptyMessage="No orders found." />
       </div>
-      <OrderDrawer order={selectedOrder} onClose={() => setSelectedOrder(null)} />
+      <OrderDrawer order={selectedOrder} onClose={handleCloseDrawer} />
     </div>
   );
 }

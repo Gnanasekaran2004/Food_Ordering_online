@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAdminData } from '../hooks/useAdminData';
+import { useAdminData } from '../context/AdminDataContext';
 import KpiCard from '../components/KpiCard';
 import DateRangePicker from '../components/DateRangePicker';
 import SvgLineChart from '../components/SvgLineChart';
@@ -78,11 +78,12 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {activity.slice(0, 5).map(a => (
               <div key={a.id} style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: a.type === 'Orders' ? '#3b82f6' : 'var(--gold)' }} />
-                <div style={{ flex: 1, color: 'var(--cream)', fontSize: '0.85rem' }}>{a.message}</div>
-                <div style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>{new Date(a.time).toLocaleTimeString()}</div>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: (a.entityType || a.type) === 'ORDER' ? '#3b82f6' : 'var(--gold)' }} />
+                <div style={{ flex: 1, color: 'var(--cream)', fontSize: '0.85rem' }}>{a.summary || a.message}</div>
+                <div style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>{a.createdAt?.toDate ? a.createdAt.toDate().toLocaleTimeString() : (a.time ? new Date(a.time).toLocaleTimeString() : 'Just now')}</div>
               </div>
             ))}
+            {activity.length === 0 && <div style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>No recent activity.</div>}
           </div>
         </div>
         <div style={{ flex: '2 1 300px', background: 'var(--surface)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border)' }}>

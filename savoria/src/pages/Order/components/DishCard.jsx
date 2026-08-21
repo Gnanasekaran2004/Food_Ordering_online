@@ -19,7 +19,7 @@ const SPICE_LEVELS = {
 };
 
 function SpiceDots({ level }) {
-  if (!level) return null;
+  if (!level || level === 'None' || !SPICE_LEVELS[level]) return null;
   const { dots, color } = SPICE_LEVELS[level];
   return (
     <span title={SPICE_LEVELS[level].label} aria-label={`Spice level: ${SPICE_LEVELS[level].label}`} style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
@@ -259,7 +259,7 @@ const DishCard = React.memo(function DishCard({ dish, index }) {
 
         {/* Category */}
         <span style={{ fontFamily: 'var(--font-label)', fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--muted)' }}>
-          {dish.category.replace('mains', 'Main Course').replace('specials', "Chef's Specials")}
+          {(dish.category || '').replace('mains', 'Main Course').replace('specials', "Chef's Specials")}
         </span>
 
         {/* Name */}
@@ -274,7 +274,7 @@ const DishCard = React.memo(function DishCard({ dish, index }) {
 
         {/* Meta row: dietary tags + spice */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', alignItems: 'center', marginTop: 'auto' }}>
-          {dish.dietaryTags.slice(0, 3).map(tag => {
+          {(dish.dietaryTags || []).slice(0, 3).map(tag => {
             const icon = DIET_ICONS[tag];
             if (!icon) return null;
             return (
@@ -314,7 +314,7 @@ const DishCard = React.memo(function DishCard({ dish, index }) {
           <div>
             <span style={{ fontFamily: 'var(--font-label)', fontSize: '0.52rem', letterSpacing: '0.1em', color: 'var(--muted)', marginRight: '3px' }}>₹</span>
             <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', fontWeight: 400, color: 'var(--cream)' }}>
-              {dish.price.toLocaleString('en-IN')}
+              {(dish.price || 0).toLocaleString('en-IN')}
             </span>
             {dish.calories && (
               <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.68rem', color: 'var(--muted-2)', marginLeft: '0.4rem', fontWeight: 300 }}>

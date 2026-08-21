@@ -4,7 +4,6 @@ const path = require('path');
 const srcDir = path.join(__dirname, 'src');
 const files = {};
 
-// ... skipping redefining everything for speed, I'll just put the same string
 files['pages/admin/components/SvgBarChart.jsx'] = `import React, { useEffect, useState } from 'react';
 
 export default function SvgBarChart({ data, maxValue, color = 'var(--gold)' }) {

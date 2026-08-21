@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useAdminData } from '../hooks/useAdminData';
+import { useAdminData } from '../context/AdminDataContext';
 
 export default function ActivityPage() {
   const { activity } = useAdminData('30d');
   const [filter, setFilter] = useState('All');
   const [limit, setLimit] = useState(10);
 
-  const types = ['All', 'Orders', 'Customers', 'Reservations', 'Menu', 'System'];
-  const filtered = activity.filter(a => filter === 'All' || a.type === filter);
+  const types = ['All', 'ORDER', 'USER', 'RESERVATION', 'MENU', 'SETTINGS'];
+  const filtered = activity.filter(a => filter === 'All' || a.entityType === filter);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -28,14 +28,15 @@ export default function ActivityPage() {
               {i !== filtered.slice(0, limit).length - 1 && <div style={{ position: 'absolute', left: 5, top: 20, bottom: -20, width: 2, background: 'var(--surface-3)' }} />}
               <div style={{ width: 12, height: 12, borderRadius: '50%', background: 'var(--gold)', marginTop: 4, position: 'relative', zIndex: 2 }} />
               <div>
-                <div style={{ color: 'var(--cream)', fontSize: '0.95rem' }}>{a.message}</div>
+                <div style={{ color: 'var(--cream)', fontSize: '0.95rem' }}>{a.summary || a.message}</div>
                 <div style={{ color: 'var(--muted)', fontSize: '0.8rem', marginTop: '4px' }}>
-                  <span style={{ color: 'var(--gold)', marginRight: '8px' }}>{a.type}</span>
-                  {new Date(a.time).toLocaleString()}
+                  <span style={{ color: 'var(--gold)', marginRight: '8px' }}>{a.entityType || a.type}</span>
+                  {a.createdAt?.toDate ? a.createdAt.toDate().toLocaleString() : (a.time ? new Date(a.time).toLocaleString() : 'Just now')}
                 </div>
               </div>
             </div>
           ))}
+          {filtered.length === 0 && <div style={{ color: 'var(--muted)' }}>No activity logs found.</div>}
         </div>
         {limit < filtered.length && (
           <div style={{ textAlign: 'center', marginTop: '24px' }}>

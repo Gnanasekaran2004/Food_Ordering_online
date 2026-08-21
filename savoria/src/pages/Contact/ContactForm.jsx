@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { contactData } from '../../data/contactData';
+import { sendContactEmail } from '../../services/emailService';
 
 /* ── Reusable styled input ─────────────────────────────────── */
 function Field({ label, id, error, required, children }) {
@@ -65,13 +66,32 @@ const focusStyle = {
 /* ── Validate helpers ─────────────────────────────────────── */
 function validateForm(values) {
   const errors = {};
-  if (!values.name.trim())             errors.name    = 'Please enter your name.';
-  if (!values.email.trim())            errors.email   = 'Please enter your email.';
+  if (!values.name.trim())             
+    errors.name = 'Please enter your name.';
+  else if (values.name.trim().length < 2)
+    errors.name = 'Name is too short.';
+
+  if (!values.email.trim())            
+    errors.email = 'Please enter your email.';
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim()))
-                                       errors.email   = 'Please enter a valid email address.';
-  if (!values.message.trim())          errors.message = 'Please enter a message.';
+    errors.email = 'Please enter a valid email address.';
+
+  if (values.phone && values.phone.trim()) {
+    const phoneTrimmed = values.phone.trim();
+    if (!/^[\d\s\+\-\(\)]+$/.test(phoneTrimmed)) {
+      errors.phone = 'Phone contains invalid characters.';
+    } else if (phoneTrimmed.length < 5) {
+      errors.phone = 'Phone number is too short.';
+    }
+  }
+
+  if (!values.message.trim())          
+    errors.message = 'Please enter a message.';
   else if (values.message.trim().length < 10)
-                                       errors.message = 'Message must be at least 10 characters.';
+    errors.message = 'Message must be at least 10 characters.';
+  else if (values.message.trim().length > 2000)
+    errors.message = 'Message is too long. Please shorten it.';
+
   return errors;
 }
 
@@ -79,7 +99,7 @@ function validateForm(values) {
    CONTACT FORM
 ══════════════════════════════════════════════════════════════ */
 export default function ContactForm() {
-  const [values, setValues]   = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+  const [values, setValues]   = useState({ name: '', email: '', phone: '', subject: '', message: '', bot_field: '' });
   const [errors, setErrors]   = useState({});
   const [touched, setTouched] = useState({});
   const [status, setStatus]   = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
@@ -103,17 +123,82 @@ export default function ContactForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (status === 'loading') return;
+    
+    // Honeypot check
+    if (values.bot_field) {
+      // Silently succeed for bots
+      setStatus('loading');
+      setTimeout(() => setStatus('success'), 1000);
+      return;
+    }
+
     const allTouched = { name: true, email: true, phone: true, subject: true, message: true };
     setTouched(allTouched);
-    const errs = validateForm(values);
+    
+    // Add subject validation
+    const currentValues = { ...values };
+    const errs = validateForm(currentValues);
+    if (!currentValues.subject) {
+      errs.subject = 'Please select an inquiry type.';
+    }
+    
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
     setStatus('loading');
-    // Simulated API call — replace with real endpoint when ready
-    await new Promise(r => setTimeout(r, 1600));
-    setStatus('success');
+    
+    try {
+      await sendContactEmail(currentValues);
+      setStatus('success');
+    } catch (error) {
+      setStatus('error');
+    }
   };
+
+  /* ── Error state ────────────────────────────────────────── */
+  if (status === 'error') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          padding: '2.5rem 2rem',
+          textAlign: 'center',
+          border: '1px solid rgba(224,92,92,0.2)',
+          borderRadius: '3px',
+          background: 'rgba(224,92,92,0.03)',
+        }}
+      >
+        <div style={{
+          width: '56px', height: '56px', borderRadius: '50%',
+          border: '1.5px solid #e05c5c', display: 'flex',
+          alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem',
+        }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e05c5c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            <circle cx="12" cy="12" r="10"></circle>
+          </svg>
+        </div>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 300, color: 'var(--cream)', marginBottom: '0.75rem' }}>
+          Unable to send
+        </h3>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', color: 'var(--muted)', fontWeight: 300, lineHeight: 1.8, maxWidth: '340px', margin: '0 auto 1.5rem' }}>
+          Something went wrong while sending your message. Please check your connection or try again later.
+        </p>
+        <button
+          onClick={() => setStatus('idle')}
+          style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--muted)', padding: '0.6rem 1.4rem', borderRadius: '2px', fontFamily: 'var(--font-label)', fontSize: '0.52rem', letterSpacing: '0.18em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.3s ease' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.color = 'var(--gold)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'var(--muted)'; }}
+        >
+          Try Again
+        </button>
+      </motion.div>
+    );
+  }
 
   /* ── Success state ────────────────────────────────────────── */
   if (status === 'success') {
@@ -164,6 +249,17 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate aria-label="Contact form">
+      {/* Honeypot field - visually hidden, removed from tab order */}
+      <input
+        type="text"
+        name="bot_field"
+        style={{ display: 'none' }}
+        tabIndex={-1}
+        autoComplete="off"
+        value={values.bot_field}
+        onChange={set('bot_field')}
+      />
+
       <div style={{ display: 'grid', gap: '1.25rem' }}>
 
         {/* Name + Email row */}
@@ -202,7 +298,7 @@ export default function ContactForm() {
 
         {/* Phone + Subject row */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-row">
-          <Field label="Phone" id="contact-phone">
+          <Field label="Phone" id="contact-phone" error={touched.phone && errors.phone}>
             <input
               id="contact-phone"
               type="tel"
@@ -210,21 +306,21 @@ export default function ContactForm() {
               value={values.phone}
               onChange={set('phone')}
               onFocus={() => setFocused('phone')}
-              onBlur={() => setFocused(null)}
+              onBlur={blur('phone')}
               placeholder="+91 00000 00000 (optional)"
-              style={{ ...inputStyle(false), ...getFocusStyle('phone') }}
+              style={{ ...inputStyle(touched.phone && errors.phone), ...getFocusStyle('phone') }}
             />
           </Field>
 
-          <Field label="Inquiry Type" id="contact-subject">
+          <Field label="Inquiry Type" id="contact-subject" error={touched.subject && errors.subject} required>
             <select
               id="contact-subject"
               value={values.subject}
               onChange={set('subject')}
               onFocus={() => setFocused('subject')}
-              onBlur={() => setFocused(null)}
+              onBlur={blur('subject')}
               style={{
-                ...inputStyle(false),
+                ...inputStyle(touched.subject && errors.subject),
                 ...getFocusStyle('subject'),
                 cursor: 'pointer',
                 WebkitAppearance: 'none',
@@ -235,6 +331,7 @@ export default function ContactForm() {
                 paddingRight: '2.5rem',
                 color: values.subject ? 'var(--cream)' : 'rgba(92,81,71,0.8)',
               }}
+              aria-invalid={!!(touched.subject && errors.subject)}
             >
               <option value="" disabled hidden>Select type</option>
               {contactData.inquiryTypes.map(t => (

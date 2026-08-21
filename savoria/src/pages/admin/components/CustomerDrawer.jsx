@@ -28,6 +28,15 @@ export default function CustomerDrawer({ customer, onClose }) {
                 <div style={{ color: 'var(--cream)', fontSize: '1.5rem', fontFamily: 'var(--font-display)', marginBottom: '4px' }}>{customer.name}</div>
                 <StatusBadge status={customer.status} />
               </div>
+              <button 
+                onClick={() => onClose(customer, customer.status === 'Active' ? 'Inactive' : 'Active')}
+                style={{
+                  marginLeft: 'auto',
+                  background: 'var(--surface)', color: 'var(--cream)', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem'
+                }}
+              >
+                Mark {customer.status === 'Active' ? 'Inactive' : 'Active'}
+              </button>
             </div>
             <div style={{ background: 'var(--surface-2)', padding: '20px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--muted)' }}>Email</span><span style={{ color: 'var(--cream)' }}>{customer.email}</span></div>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { useAdminData } from '../hooks/useAdminData';
+import { useAdminData } from '../context/AdminDataContext';
+import { useAdminAuth } from '../../../context/AdminAuthContext';
+import { updateCustomerStatus } from '../../../services/adminUserService';
 import AdminTable from '../components/AdminTable';
 import StatusBadge from '../components/StatusBadge';
 import CustomerDrawer from '../components/CustomerDrawer';
@@ -7,8 +9,22 @@ import KpiCard from '../components/KpiCard';
 
 export default function CustomersPage() {
   const { customers } = useAdminData('30d');
+  const { adminUser } = useAdminAuth();
   const [search, setSearch] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  const handleCloseDrawer = async (customer, newStatus) => {
+    if (newStatus && customer && newStatus !== customer.status) {
+      try {
+        await updateCustomerStatus(customer.id, newStatus, adminUser);
+      } catch (err) {
+        console.error("Failed to update status", err);
+        alert("Failed to update status");
+      }
+    } else if (!newStatus) {
+      setSelectedCustomer(null);
+    }
+  };
 
   const filtered = customers.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.email.toLowerCase().includes(search.toLowerCase()));
 
@@ -41,7 +57,7 @@ export default function CustomersPage() {
       <div style={{ background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--border)', overflow: 'hidden' }}>
         <AdminTable columns={columns} data={filtered} onRowClick={setSelectedCustomer} emptyMessage="No customers found." />
       </div>
-      <CustomerDrawer customer={selectedCustomer} onClose={() => setSelectedCustomer(null)} />
+      <CustomerDrawer customer={selectedCustomer} onClose={handleCloseDrawer} />
     </div>
   );
 }
