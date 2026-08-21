@@ -86,9 +86,15 @@ export async function updateMenuItem(itemId, updates, adminUser) {
 
   // Log activity
   if (adminUser) {
-    const actionDesc = updates.available !== undefined ? 
-      (updates.available ? `marked "${updates.name}" available` : `marked "${updates.name}" unavailable`) : 
-      `updated menu item "${updates.name || itemId}"`;
+    let actionDesc;
+    if ('available' in updates) {
+      const label = updates.name || itemId; // name may not be passed for toggle
+      actionDesc = updates.available
+        ? `marked "${label}" available`
+        : `marked "${label}" unavailable`;
+    } else {
+      actionDesc = `updated menu item "${updates.name || itemId}"`;
+    }
 
     await addDoc(collection(db, 'activityLogs'), {
       actorUid: adminUser.uid,

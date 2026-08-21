@@ -312,8 +312,30 @@ export default function OrderPage() {
                 <div style={{ color: 'var(--gold)', fontSize: '2rem' }}>...</div>
                 <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Loading menu from the kitchen...</p>
               </div>
+            ) : dishesError ? (
+              /* Firestore connection error */
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 'clamp(4rem, 10vh, 7rem) 2rem', gap: '1.25rem', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '3px' }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: 'rgba(239,68,68,0.3)', userSelect: 'none' }}>◈</span>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 300, color: 'var(--cream)', fontStyle: 'italic' }}>
+                  Unable to load menu.
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', color: 'var(--muted)', fontWeight: 300, maxWidth: '360px' }}>
+                  Please check your connection and refresh the page.
+                </p>
+              </div>
+            ) : dishes.length === 0 ? (
+              /* Menu collection is genuinely empty — not seeded yet */
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 'clamp(4rem, 10vh, 7rem) 2rem', gap: '1.25rem', border: '1px solid var(--border)', borderRadius: '3px' }}>
+                <span style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: 'var(--surface-3)', userSelect: 'none' }}>◈</span>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 300, color: 'var(--cream)', fontStyle: 'italic' }}>
+                  The kitchen is being prepared.
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', color: 'var(--muted)', fontWeight: 300, maxWidth: '360px' }}>
+                  Our menu will be available shortly. Please check back soon.
+                </p>
+              </div>
             ) : filtered.length === 0 ? (
-              /* Empty state */
+              /* Filters returned no results */
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 'clamp(4rem, 10vh, 7rem) 2rem', gap: '1.25rem', border: '1px solid var(--border)', borderRadius: '3px' }}>
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: 'var(--surface-3)', userSelect: 'none' }}>◈</span>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 300, color: 'var(--cream)', fontStyle: 'italic' }}>
